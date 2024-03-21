@@ -25,3 +25,33 @@ user: userReducer,
 });
 
 export default rootReducer;
+
+VUE
+
+<script>
+    //в корне
+import { createApp } from 'vue';
+import { Provider } from 'react-redux'; // обертка Provider из react-redux
+import store from './store';
+import App from './App.vue';
+
+createApp(App).use(store).mount('#app');
+
+    //в компоненте
+import { useStore } from '@vue/reactivity';
+
+export default {
+  name: 'MyComponent',
+  setup() {
+    const store = useStore();
+
+    const count = computed(() => store.state.app.count);
+
+    function increment() {
+      store.dispatch({ type: 'INCREMENT' });
+    }
+
+    return { count, increment };
+  }
+};
+</script>
