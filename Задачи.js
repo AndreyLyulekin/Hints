@@ -54,3 +54,29 @@ function findTwoSum(arr, target) {
   }
   return result;
 }
+
+const str1 = '12321';
+const str2 = '123321';
+const str3 = '123';
+
+function isPalindrome(string) {
+  let isPalindrome = false;
+
+  let left = 0;
+  let right = string.length - 1;
+
+  while (left <= right) {
+    if (string[left] === string[right]) {
+      isPalindrome = true;
+    } else {
+      break;
+    }
+    right--;
+    left++;
+  }
+  return isPalindrome;
+}
+
+console.log(isPalindrome(str1));
+console.log(isPalindrome(str2));
+console.log(isPalindrome(str3));
