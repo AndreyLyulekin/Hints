@@ -78,5 +78,9 @@ function isPalindrome(string) {
 }
 
 console.log(isPalindrome(str1));
-console.log(isPalindrome(str2));
-console.log(isPalindrome(str3));
+
+//поиск дубликатов
+var containsDuplicate = function (nums) {
+  const newNums = Array.from(new Set(nums));
+  return nums.length === newNums.length ? false : true;
+};
