@@ -54,3 +54,38 @@ Utility types:
 Что такое enum?
 Enum (перечисление) в TypeScript - это специальный тип данных, который позволяет
 задать именованные константы.
+
+interface INotAllowedPateProps {
+title: string;
+message: string;
+}
+
+export const NotAlowedPage = ({ title, message }: INotAllowedPateProps) => {
+const classes = useStyles();
+const router = useRouter();
+const { t } = useTranslation();
+const showModal = useShowModal();
+const handleLogin = React.useCallback((event) => {
+event.preventDefault();
+
+        showModal(TYPES.LOGIN, {
+            title: title,
+            message: message,
+            onSuccess: async () => {
+                await router.push(router.pathname, router.asPath);
+            },
+        });
+    }, []);
+
+    return (
+        <>
+            <Typography className={classes.pageNotAllowed}>{t('pageNotAllowed')}</Typography>
+            <Link href="/login">
+                <Button variant="outlined" color="primary" className={classes.login} onClick={handleLogin}>
+                    {t('welcome.goToLogin')}
+                </Button>
+            </Link>
+        </>
+    );
+
+};
