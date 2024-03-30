@@ -5,13 +5,19 @@
 Interface для обьектов
 Type для всего
 
+---
+
 Отличия Type от Interface
 Тип имеет обьединение, пересечение, описывает обьекты, массивы и любые структуры
 Интерфейсы обьединяются через наследования через 'extends', описывает обьекты
 
+---
+
 Дженерики
 Переменная для типа
 как в функцию пепедаются аргументы, так-же в дженерик передается тип
+
+---
 
 Intersection Types
 (((((
@@ -28,6 +34,8 @@ department: string;
 type EmployeePerson = Person & Employee;
 )))))
 
+---
+
 Utility types:
 Это утилиты которые предназначены для создания новых типов на основе других
 ● Awaited<T> – для асинхронных запросов
@@ -42,6 +50,8 @@ Utility types:
 ● Omit<T, 'key1' | 'key2'> – Утилита нужна для создания нового типа из
 оставшихся
 
+---
+
 Что такое Type Guards в Typescript? тайпгуардс
 Если тип не определен или неизвестен, то на помощь приходит “Защита типов”:
 ● typeof – узнать какой тип
@@ -51,40 +61,41 @@ Utility types:
 ● is
 ● keyof
 
+---
+
 Что такое enum?
-Enum (перечисление) в TypeScript - это специальный тип данных, который позволяет
+● Enum (перечисление) в TypeScript - это специальный тип данных, который позволяет
 задать именованные константы.
 
+---
+
+namespace
+namespace MyModule {
+export let myVariable: string = "Hello, world";
+
+export function myFunction() {
+console.log(myVariable);
+}
+}
+// другой компонент
+import \* as MyModule from './myModule';
+
+console.log(MyModule.myVariable); // Output: "Hello, world"
+MyModule.myFunction(); // Output: "Hello, world"
+
+---
+
+Создание компонента
 interface INotAllowedPateProps {
 title: string;
 message: string;
 }
-
 export const NotAlowedPage = ({ title, message }: INotAllowedPateProps) => {
-const classes = useStyles();
-const router = useRouter();
-const { t } = useTranslation();
-const showModal = useShowModal();
-const handleLogin = React.useCallback((event) => {
-event.preventDefault();
-
-        showModal(TYPES.LOGIN, {
-            title: title,
-            message: message,
-            onSuccess: async () => {
-                await router.push(router.pathname, router.asPath);
-            },
-        });
-    }, []);
+//some logic
 
     return (
         <>
-            <Typography className={classes.pageNotAllowed}>{t('pageNotAllowed')}</Typography>
-            <Link href="/login">
-                <Button variant="outlined" color="primary" className={classes.login} onClick={handleLogin}>
-                    {t('welcome.goToLogin')}
-                </Button>
-            </Link>
+            <Header />
         </>
     );
 
