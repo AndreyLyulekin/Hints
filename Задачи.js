@@ -406,3 +406,36 @@ let fizzBuzzFunc = (num) => {
     }
   }
 };
+
+//
+//
+//
+// АЛГОРИТМ БИНАРНОГО ПОИСКА - после сортировки
+// Сложность O(log n)
+//
+//
+//
+let array = [-1, 0, 3, 5, 7, 9, 12];
+
+let search = (arr, target) => {
+  //три указателя
+  let left = 0;
+  let right = arr.length - 1;
+  //будет переопределяться
+  let mid;
+
+  //итерируемся пока левая граница меньше или равна правой
+  while (left <= right) {
+    mid = Math.round((right - left) / 2 + left);
+
+    if (target === arr[mid]) {
+      //если попали сразу или нашли в итоге
+      return mid;
+    } else if (target < arr[mid]) {
+      right = mid - 1;
+    } else {
+      left = mid + 1;
+    }
+  }
+  return -1;
+};
