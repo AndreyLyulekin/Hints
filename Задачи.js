@@ -1,6 +1,6 @@
 // Оценка сложности по скорости/операциям
 // O(1) константная - не важно сколько данных на входе ПРИМЕР: получить последний эл массива
-// O(n) линейная - 10 вход данных = 10 операций
+// O(n) линейная - 10 вход данных = 10 операций, просто 1 цикл
 // O(log n) логарифмическая - 100 вход данных - 7 операций || 10_000 = 14 (бинарный поиск)
 // O(n"2) - квадратичная - 10_000 = 100_000_000 || 10 = 100, цикл в цикле
 // O(n"3) - кубическая - 10_000 = 1_000_000_000_000 || 10 = 1_000, три вложенных цикла
@@ -8,12 +8,17 @@
 // O(n!) - факториал 3 * 2 * 1 = 6 || 5 * 4 * 3 * 2 * 1 = 120
 
 // Оценка сложности по памяти
-// O(1) константная - не важно сколько данных на входе ПРИМЕР: получить последний эл массива
+// O(1) константная - не важно сколько данных на входе - хранение результата
 // O(n) линейная - 10 вход данных = 10 операций - копирование массива
+// O(N^2) - квадратичная - если используются множество структур данных
 
 //Вопросы,
-// какие крайние кейсы?
+// какие могут быть входящие данные и какие крайние кейсы?
 // какие требования по памяти или скорости?
+
+//циклы
+// for of - итерирование по значению
+// for in - для обьектов, итерирование по ключам (у массива по индексам, что-бы по ключам arr[item])
 
 // Debounce
 // для того, что-бы функция была вызвана только после
@@ -47,7 +52,13 @@ function throttle(func, delay) {
   };
 }
 
+//
+//
+//
 // Двойной указатель
+//
+//
+//
 // линейная сложность O(n)
 function findTwoSum(arr, target) {
   const result = [];
@@ -72,7 +83,17 @@ function findTwoSum(arr, target) {
   return result;
 }
 
+//
+//
+//
 // Палиндром
+//
+//
+//
+
+// простой способ - function palindrome (str)
+// str = str.toLowerCase(). +++ split(' ').join('') - убрать пробелы
+// return str === str.split('').reverse().join()
 
 const str1 = '12321';
 const str2 = '123321';
@@ -98,13 +119,27 @@ function isPalindrome(string) {
 
 console.log(isPalindrome(str1));
 
+//
+//
+//
 //поиск дубликатов
+//
+//
+//
+
 var containsDuplicate = function (nums) {
   const newNums = Array.from(new Set(nums));
   return nums.length === newNums.length ? false : true;
 };
 
+//
+//
+//
 // создаем СЛОВАРИК + АНАГРАМ
+//
+//
+//
+
 function buildDictionary(str) {
   let dictionary = {};
 
@@ -120,7 +155,14 @@ function buildDictionary(str) {
   return dictionary;
 }
 
-//сам АНАГРАМ
+//СЛОВАРЬ ЧЕРЕЗ REDUCE (на входе массив)
+let dictionary = nums1.reduce((acc, item) => {
+  acc[item] = acc[item] ? acc[item] + 1 : 1;
+
+  return acc;
+}, {});
+
+//сам АНАГРАМ - одни и теже буквы для разных слов
 let s = 'anagram';
 let t = 'naGaram';
 
@@ -145,3 +187,222 @@ let isAnagram = function (s, t) {
 // ИЛИ В ОДНУ СТРОКУ
 
 let isAnagram2 = (s, t) => [...s.toLowerCase()].sort().toString() === [...t.toLowerCase()].sort().toString();
+
+//
+//
+//
+//обьединение интервалов
+//O(n log n) по времени
+//O(log n) по памяти из-за сортировке, если сорт в новый arr то O(n)
+//
+//
+//
+
+const intervals = [
+  [11, 12],
+  [2, 3],
+  [5, 7],
+  [1, 4],
+  [8, 10],
+  [6, 8],
+];
+
+const mergeInterval = (arr) => {
+  if (arr.length < 2) {
+    return arr;
+  }
+
+  arr.sort((a, b) => a[0] - b[0]);
+
+  let result = [arr[0]];
+
+  for (let interval of arr) {
+    //недавний
+    let recent = result[result.length - 1];
+
+    if (recent[1] >= interval[0]) {
+      recent[1] = Math.max(recent[1], interval[1]);
+    } else {
+      result.push(interval);
+    }
+  }
+
+  return result;
+};
+
+console.log(mergeInterval(intervals));
+
+//
+//
+//
+//Сортировка пузырьком
+//смысл сортировки пузырьком, за каждый проход по массиву, мы самый большой элемент ставим в конец
+//
+//
+//
+
+function bubble(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[i] > arr[j]) {
+        const temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+      }
+    }
+  }
+  console.log(arr);
+}
+
+bubble(arr);
+
+//
+//
+//
+//Правильная последовательность скобок
+//решаем через стэк, по памяти и скорости O(n) - линейная
+//
+//
+//
+
+let s1 = '()';
+let s2 = '()[]{}';
+let s3 = '(]';
+let s4 = '(])';
+
+function isValid(str) {
+  //edge кейс, сразу вернем значение если символов не кратно двум
+  if (str.length % 2 != 0) return false;
+
+  //тут нужен стэк куда кладем открывающиеся скобки
+  let stack = [];
+  //некий словарик с ключем открывающим и значением закрывающей скобки
+  let brackets = {
+    ')': '(',
+    '}': '{',
+    ']': '[',
+  };
+
+  //тут делаем цикл идем по каждой скобке
+  for (let i = 0; i < str.length; i++) {
+    const current = str[i];
+
+    //нужна функция где мы будем проверять является ли скобка закрывающей и !!! ДОСТАТЬ ИЗ ЦИКЛА
+    function helperClosedBracket(char) {
+      return [')', ']', '}'].indexOf(char) > -1;
+    }
+
+    //если current это закрывающаяся скобка
+    if (helperClosedBracket(current)) {
+      //проверяем последовательность скобок
+      if (brackets[current] != stack.pop()) return false;
+    } else {
+      //если current не закрывающаяся скобка
+      stack.push(current);
+    }
+  }
+  //После цикла, проверяем, остались ли символы в стеке
+  return stack.length === 0;
+}
+
+//
+//
+//
+// Shuffle массива
+// O(n) - по скорости, O(1) - по памяти
+// Алгоритм Фишера-Йетса
+//
+//
+//
+
+let shuffle = (arr) => {
+  //с конца массива будем менять числа местами с рандомным индексом
+  for (let i = arr.length - 1; i > 0; i--) {
+    let temp = arr[i];
+    let rnd = Math.floor(Math.random() * arr.length);
+
+    arr[i] = arr[rnd];
+    arr[rnd] = temp;
+  }
+  return arr;
+};
+
+//
+//
+//
+// ПЕРВЫЙ УНИКАЛЬНЫЙ СИМВОЛ
+// O(n) - по скорости, O(1) - по памяти
+//
+//
+//
+
+let firstUnique = (str) => {
+  //вернем -1 если нет уникальной буквы
+  let result = -1;
+
+  //делаем словарик
+  const dictionary = buildDictionary(str);
+
+  for (let [letter, count] of Object.entries(dictionary)) {
+    if (count === 1) {
+      result = letter;
+      break;
+    }
+  }
+
+  return result;
+};
+
+//
+//
+//
+// ПЕРЕСЕЧЕНИЕ ДВУх Массивов
+//
+//
+//
+
+const intersection = (arr1, arr2) => {
+  let result = [];
+
+  let dictionary = arr1.reduce((acc, item) => {
+    acc[item] = acc[item] ? acc[item] + 1 : 1;
+
+    return acc;
+  }, {});
+
+  for (let i = 0; i < arr2.length; i++) {
+    const current = arr2[i];
+    let count = dictionary[current];
+
+    if (count && count > 0) {
+      result.push(current);
+      dictionary[current] -= 1;
+    }
+  }
+
+  return result;
+};
+
+//
+//
+//
+// fizzBuzz
+//
+//
+//
+let input = 22;
+
+let fizzBuzzFunc = (num) => {
+  for (let i = 1; i <= num; i++) {
+    //в первую очередь ставим fizzbuzz тк если иф тут сработает, то дальше он не пойдет
+    if (i % 3 === 0 && i % 5 === 0) {
+      console.log('fizzBuzz');
+    } else if (i % 3 === 0) {
+      console.log('fizz');
+    } else if (i % 5 === 0) {
+      console.log('buzz');
+    } else {
+      console.log(i);
+    }
+  }
+};
