@@ -91,9 +91,9 @@ function findTwoSum(arr, target) {
 //
 //
 
-// простой способ - function palindrome (str)
-// str = str.toLowerCase(). +++ split(' ').join('') - убрать пробелы
-// return str === str.split('').reverse().join()
+// ПРОСТОЙ СПОСОБ - function palindrome (str)
+// string = string.toLowerCase().split('').join('') // убрать все символы  .replace(/[^a-zа-я0-9]/g, '');
+// return string === string.split('').reverse().join('');
 
 const str1 = '12321';
 const str2 = '123321';
