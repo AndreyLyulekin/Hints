@@ -2,6 +2,9 @@
 Пользовались type, потому что с ним удобнее работать: краткий синтаксис и больше
 возможностей: Union Types(let myVar: number | string;), Intersection Types
 
+Создание массива со строками и числами:
+let mixedArray: (string | number)[] = ["foo", 1, "bar", 2];
+
 Interface для обьектов
 Type для всего
 
