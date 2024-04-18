@@ -127,12 +127,12 @@ export const NotAlowedPage = ({ title, message }: INotAllowedPateProps) => {
 **Nullbale**
 
 type UserForm = {  
- name: Nullable<string>;  
+ name: Nullable`<string>`;  
  age: number;  
  email: string  
 }
 
-type Nullable<T> = null | T
+type Nullable`<T>` = null | T
 
 const user: UserForm = {  
 name: null;  
