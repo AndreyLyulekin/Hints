@@ -1,28 +1,34 @@
-Разница между Type и Interface
-Пользовались type, потому что с ним удобнее работать: краткий синтаксис и больше
+**азница между Type и Interface**  
+Пользовались type, потому что с ним удобнее работать: краткий синтаксис и больше  
 возможностей: Union Types(let myVar: number | string;), Intersection Types
 
-Создание массива со строками и числами:
+Создание массива со строками и числами:  
 let mixedArray: (string | number)[] = ["foo", 1, "bar", 2];
 
-Interface для обьектов
+Interface для обьектов  
 Type для всего
 
----
+//  
+//  
+//
 
-Отличия Type от Interface
+**Отличия Type от Interface**
 Тип имеет обьединение, пересечение, описывает обьекты, массивы и любые структуры
 Интерфейсы обьединяются через наследования через 'extends', описывает обьекты
 
----
+//  
+//  
+//
 
-Дженерики
+**Дженерики**
 Переменная для типа
 как в функцию пепедаются аргументы, так-же в дженерик передается тип
 
----
+//  
+//  
+//
 
-Intersection Types
+**Intersection Types**
 (((((
 type Person = {
 name: string;
@@ -37,9 +43,11 @@ department: string;
 type EmployeePerson = Person & Employee;
 )))))
 
----
+//  
+//  
+//
 
-Utility types:
+**Utility types:**
 Это утилиты которые предназначены для создания новых типов на основе других
 ● Awaited<T> – для асинхронных запросов
 ● Partial<T> – Свойства текущего типа делает опциональным
@@ -53,9 +61,11 @@ Utility types:
 ● Omit<T, 'key1' | 'key2'> – Утилита нужна для создания нового типа из
 оставшихся
 
----
+//  
+//  
+//
 
-Что такое Type Guards в Typescript? тайпгуардс
+**Что такое Type Guards в Typescript? тайпгуардс**
 Если тип не определен или неизвестен, то на помощь приходит “Защита типов”:
 ● typeof – узнать какой тип
 ● in – есть ли свойство в объекте
@@ -64,13 +74,17 @@ Utility types:
 ● is
 ● keyof
 
----
+//  
+//  
+//
 
-Что такое enum?
+**Что такое enum?**
 ● Enum (перечисление) в TypeScript - это специальный тип данных, который позволяет
 задать именованные константы.
 
----
+//  
+//  
+//
 
 namespace
 namespace MyModule {
@@ -86,13 +100,15 @@ import \* as MyModule from './myModule';
 console.log(MyModule.myVariable); // Output: "Hello, world"
 MyModule.myFunction(); // Output: "Hello, world"
 
----
+//  
+//  
+//
 
-Создание компонента
-interface INotAllowedPateProps {
-title: string;
-message: string;
-}
+**Создание компонента**  
+interface INotAllowedPateProps {  
+title: string;  
+message: string;  
+}  
 export const NotAlowedPage = ({ title, message }: INotAllowedPateProps) => {
 //some logic
 
@@ -103,3 +119,23 @@ export const NotAlowedPage = ({ title, message }: INotAllowedPateProps) => {
     );
 
 };
+
+//  
+//  
+//
+
+**Nullbale**
+
+type UserForm = {  
+ name: Nullable<string>;  
+ age: number;  
+ email: string  
+}
+
+type Nullable<T> = null | T
+
+const user: UserForm = {  
+name: null;  
+age: 14;  
+email: fgsg@mail.ru  
+}
