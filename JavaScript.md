@@ -6,8 +6,34 @@
 Это микротаска, под капотом работающая через microtaskQueue()
 
 Методы:
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-JSON (JavaScript Object Notation)
+**Деструктуризация**
+это когда можно извлекать данные из массивов или обьектов и сразу назначать на переменные
+
+1.  // Деструктуризация массива  
+     const numbers = [1, 2, 3, 4, 5];
+
+const [a, b, ...rest] = numbers;
+
+console.log(a); // Вывод: 1
+console.log(b); // Вывод: 2
+console.log(rest); // Вывод: [3, 4, 5]
+
+2.  // Деструктуризация объекта  
+     const person = {
+    name: "Alice",
+    age: 30,
+    city: "New York"
+    };
+
+// Деструктуризация объекта с оператором spread
+const { name, ...details } = person;
+
+console.log(name); // Вывод: "Alice"
+console.log(details); // Вывод: { age: 30, city: "New York" }
+
+**JSON (JavaScript Object Notation)**
 Это формат обмена данными, основанный на синтаксисе JavaScript.
 
 var - функциональная область видимости, может быть обьявлена повторно
