@@ -88,26 +88,50 @@ type EmployeePerson = Person & Employee;
 
 тк Каждый enum После компиляции — это отдельная самовызывающяся функция + объект, а не просто литерал
 Код из-за этого сильно дублируется + Tree-shaking (удаление неиспользуемого кода) не работает с enum
-Как-то мы даже переписали часть енамов и выйграли в районе 5-10 КБ
+Как-то мы даже переписали часть енамов (на const enum) и выйграли в районе 5-10 КБ
 а это для нас чувствительно тк приоритет — минимум загрузочного JS.
+
+// Было
+enum Colors {
+    // Стало:
+ // const enum Colors {
+  Red = "red",
+  Green = "green",
+}
+
+console.log(Colors.Red);
 
 //  
 //  
 //
 
-namespace
-namespace MyModule {
-export let myVariable: string = "Hello, world";
+**namespace**
+это старый способ группировать код до появления ES-модулей (import/export).
+namespace — для объедининения несколько сущностей (функций, классов, интерфейсов, констант)
+в одно логическое пространство имён, чтобы избежать конфликтов имён в глобальной области.
 
-export function myFunction() {
-console.log(myVariable);
-}
-}
-// другой компонент
-import \* as MyModule from './myModule';
+namespace — это самовызывающаяся функция, создающая глобальный объект
 
-console.log(MyModule.myVariable); // Output: "Hello, world"
-MyModule.myFunction(); // Output: "Hello, world"
+
+namespace Geometry {
+  export const PI = 3.14;
+
+  export function areaOfCircle(radius: number) {
+    return PI * radius * radius;
+  }
+
+  export class Rectangle {
+    constructor(public w: number, public h: number) {}
+    area() {
+      return this.w * this.h;
+    }
+  }
+}
+
+// Используем:
+console.log(Geometry.areaOfCircle(10));
+console.log(new Geometry.Rectangle(2, 5).area());
+
 
 //  
 //  
