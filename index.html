@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1" />
+    <title>Шпаргалки</title>
+    <style>
+      :root {
+        --bg: #0b0c10;
+        --card: #12141b;
+        --text: #e7e7ea;
+        --muted: #a7a7b2;
+        --line: #262a36;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font: 14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+        background: var(--bg);
+        color: var(--text);
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(11, 12, 16, 0.92);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
+        padding: 14px 16px;
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      input[type='search'] {
+        flex: 1 1 340px;
+        min-width: 240px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #0f1117;
+        color: var(--text);
+        outline: none;
+      }
+      input[type='search']:focus {
+        border-color: #3a73ff55;
+        box-shadow: 0 0 0 3px #3a73ff22;
+      }
+      .btn {
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #0f1117;
+        color: var(--text);
+        cursor: pointer;
+      }
+      .btn:hover {
+        border-color: #3a73ff55;
+      }
+      .meta {
+        color: var(--muted);
+        margin-top: 8px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .badge {
+        font-size: 12px;
+        color: var(--muted);
+        border: 1px solid var(--line);
+        padding: 2px 8px;
+        border-radius: 999px;
+      }
+      label {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+      }
+      main {
+        padding: 16px;
+      }
+      .list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      details {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--card);
+        overflow: hidden;
+      }
+      summary {
+        list-style: none;
+        cursor: pointer;
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+      }
+      summary::-webkit-details-marker {
+        display: none;
+      }
+      .chev {
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+        transform: rotate(-45deg);
+        border-right: 2px solid var(--muted);
+        border-bottom: 2px solid var(--muted);
+        margin-left: 2px;
+      }
+      details[open] > summary .chev {
+        transform: rotate(45deg);
+      }
+      .body {
+        border-top: 1px solid var(--line);
+        padding: 10px 14px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .text {
+        white-space: pre-wrap;
+        opacity: 0.92;
+      }
+      pre,
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+        font-size: 12.5px;
+      }
+      pre {
+        margin: 0;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: #0b0d12;
+        overflow: auto;
+      }
+      mark {
+        background: #3a73ff33;
+        color: inherit;
+        padding: 0 2px;
+        border-radius: 4px;
+      }
+      .hidden {
+        display: none !important;
+      }
+      .empty {
+        border: 1px dashed var(--line);
+        border-radius: 14px;
+        padding: 18px;
+        color: var(--muted);
+        background: #0f1117;
+        margin-top: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <div class="row">
+          <input
+            id="q"
+            type="search"
+            placeholder="Поиск по заголовкам и тексту карточек..."
+            autocomplete="off" />
+          <button
+            class="btn"
+            id="clear">
+            Очистить
+          </button>
+          <button
+            class="btn"
+            id="expandAll">
+            Раскрыть
+          </button>
+          <button
+            class="btn"
+            id="collapseAll">
+            Свернуть
+          </button>
+        </div>
+        <div class="meta">
+          <label
+            ><input
+              type="checkbox"
+              id="autoOpen"
+              checked />
+            авто-раскрывать совпадения</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              id="highlight"
+              checked />
+            подсветка</label
+          >
+          <span
+            id="counter"
+            class="badge"
+            >0 результатов</span
+          >
+          <span class="badge">Ctrl/⌘ + K — фокус на поиск</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="wrap">
+        <div
+          class="list"
+          id="root"></div>
+        <div
+          class="empty hidden"
+          id="empty">
+          Ничего не найдено. Попробуй другой запрос.
+        </div>
+      </div>
+    </main>
+
+    <!-- 1) Подключаем данные отдельно -->
+    <script src="./cards-data.js"></script>
+
+    <script>
+      // cards-data.js должен создать window.CARDS = [...]
+      const CARDS = Array.isArray(window.CARDS) ? window.CARDS : [];
+
+      const root = document.getElementById('root');
+      const empty = document.getElementById('empty');
+
+      const q = document.getElementById('q');
+      const clearBtn = document.getElementById('clear');
+      const autoOpen = document.getElementById('autoOpen');
+      const highlight = document.getElementById('highlight');
+      const counter = document.getElementById('counter');
+
+      function escapeHtml(s) {
+        return (s ?? '').replace(
+          /[&<>"']/g,
+          (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
+        );
+      }
+
+      function render() {
+        root.innerHTML = '';
+
+        CARDS.forEach((c, idx) => {
+          const d = document.createElement('details');
+          d.className = 'card';
+          d.open = !!c.openByDefault;
+
+          const title = c.title ?? `Карточка #${idx + 1}`;
+          const text = c.text ?? '';
+          const code = c.code ?? '';
+
+          // для поиска
+          d.dataset.title = title.toLowerCase();
+          d.dataset.text = text.toLowerCase();
+          d.dataset.search = (title + ' ' + text).toLowerCase(); // поиск только по title+text
+
+          d.innerHTML = `
+        <summary class="hl"><span class="chev"></span>${escapeHtml(title)}</summary>
+        <div class="body">
+          ${text ? `<div class="text hl">${escapeHtml(text)}</div>` : `<div class="text muted">Нет текста</div>`}
+          ${code ? `<pre><code>${escapeHtml(code)}</code></pre>` : ``}
+        </div>
+      `;
+          root.appendChild(d);
+        });
+      }
+
+      render();
+
+      function resetHighlights() {
+        document.querySelectorAll('.hl').forEach((el) => {
+          if (el.__rawHtml) el.innerHTML = el.__rawHtml;
+        });
+      }
+
+      function applyHighlight(term) {
+        if (!term || !highlight.checked) return;
+        const safe = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const re = new RegExp(safe, 'ig');
+
+        document.querySelectorAll('.hl').forEach((el) => {
+          if (!el.__rawHtml) el.__rawHtml = el.innerHTML;
+          el.innerHTML = el.__rawHtml.replace(re, (m) => `<mark>${m}</mark>`);
+        });
+      }
+
+      function setAllOpen(open) {
+        document.querySelectorAll('details.card:not(.hidden)').forEach((d) => (d.open = open));
+      }
+
+      function filter() {
+        const term = (q.value || '').trim().toLowerCase();
+        resetHighlights();
+
+        let visible = 0;
+
+        document.querySelectorAll('details.card').forEach((d) => {
+          const hay = d.dataset.search; // title+text
+          const ok = !term || (hay && hay.includes(term));
+          d.classList.toggle('hidden', !ok);
+
+          if (ok) {
+            visible++;
+            if (autoOpen.checked && term) d.open = true;
+          }
+        });
+
+        empty.classList.toggle('hidden', visible !== 0);
+        counter.textContent = `${visible} результатов`;
+
+        applyHighlight(term);
+      }
+
+      q.addEventListener('input', filter);
+      autoOpen.addEventListener('change', filter);
+      highlight.addEventListener('change', filter);
+
+      clearBtn.addEventListener('click', () => {
+        q.value = '';
+        filter();
+        q.focus();
+      });
+
+      document.getElementById('expandAll').addEventListener('click', () => setAllOpen(true));
+      document.getElementById('collapseAll').addEventListener('click', () => setAllOpen(false));
+
+      document.addEventListener('keydown', (e) => {
+        const isMac = navigator.platform.toLowerCase().includes('mac');
+        const mod = isMac ? e.metaKey : e.ctrlKey;
+        if (mod && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          q.focus();
+          q.select();
+        }
+      });
+
+      filter();
+    </script>
+  </body>
+</html>
