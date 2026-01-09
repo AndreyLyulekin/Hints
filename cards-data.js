@@ -1,9 +1,302 @@
 window.CARDS = [
+    // {
+    //   title: '',
+    //   text: ``,
+    //   code: ``,
+    //   openByDefault: false,
+    // },
     {
-      title: '',
-      text: ``,
+      title: 'Cookies, JWT и безопасность',
+      text: `
+● HttpOnly cookie
+- cookie НЕ доступна из JavaScript
+- защищает от кражи через XSS
+- браузер сам отправляет cookie в запросах
+
+Пример:
+- session id
+- auth cookie
+
+● Secure cookie
+- cookie отправляется ТОЛЬКО по HTTPS
+- защищает от перехвата в сети
+
+Обычно используют вместе:
+- HttpOnly + Secure + SameSite
+
+● Почему localStorage опасен
+- доступен из JavaScript
+- если есть XSS → данные легко украсть
+- токены нельзя защитить флагами
+
+Вывод:
+- localStorage НЕ подходит для хранения токенов авторизации
+
+● JWT
+- формат токена (строка)
+- сам по себе НЕ способ хранения
+- может храниться в cookie или localStorage
+
+● JWT vs Cookies
+
+JWT:
+- часто кладут в localStorage (опасно)
+- нужно вручную отправлять в заголовке
+- не защищён от XSS
+
+Cookies:
+- отправляются браузером автоматически
+- можно защитить HttpOnly / Secure / SameSite
+- лучше для сессий и авторизации
+`,
       code: ``,
-      openByDefault: true,
+      openByDefault: false,
+    },
+    {
+        title: 'Security - XSS, CSRF, CORS, CSP, SameSite cookies',
+        text: `Security — это защита сайта и пользователя
+от вредоносных действий.
+
+● XSS
+- на страницу попадает чужой JavaScript
+- этот код выполняется в браузере пользователя
+- может украсть cookies, токены, данные
+
+Типы XSS:
+- Stored — хранится на сервере
+- Reflected — приходит в ответе
+- DOM-based — происходит на клиенте
+
+Защита:
+- экранировать пользовательский ввод
+- не вставлять HTML напрямую
+- использовать CSP
+
+● CSRF
+- браузер отправляет запрос с cookies без ведома пользователя
+- злоумышленник заставляет браузер сделать запрос
+
+Защита:
+- CSRF-токены 
+(секретная одноразовая строка, генерируемая сервером + Токен вставляется в: <input type="hidden"> или заголовок X-CSRF-Token, которую сайт добавляет к каждому потенциально опасному запросу (POST / PUT / DELETE))
+- SameSite cookies
+- проверка Origin / Referer
+
+● CORS
+- настраивается сервером
+- правило для браузера: можно ли сайту A читать ответы сайта B
+- НЕ защита сервера
+- не защита от атак, а политика доступа
+
+● SameSite cookies
+- контролируют, когда cookies отправляются
+- ограничивают отправку cookies между сайтами
+
+Значения:
+- Strict — cookie отправляется только с этого сайта
+- Lax — отправляется при навигации
+- None — всегда (только с Secure)
+
+● CSP (Content Security Policy)
+- HTTP-заголовок, ограничивающий:
+  - источники скриптов
+  - inline-код
+  - загрузку ресурсов
+  Пример: банки изначально блочат все, кроме себя, потом разрешают по необходимости
+- сильно снижает риск XSS
+      `,
+        code: ``,
+        openByDefault: false,
+      },
+    {
+      title: 'Errors и Error Handling',
+      text: `
+Error handling — это механизм обработки ошибок,
+возникающих во время выполнения JavaScript-кода.
+
+● Типы ошибок (Error types):
+
+- Error — базовый тип ошибок
+- TypeError — неверный тип значения
+- ReferenceError — обращение к несуществующей переменной
+- SyntaxError — ошибка синтаксиса
+- RangeError — выход за допустимый диапазон
+- URIError — ошибка при работе с URI
+
+● try / catch
+- используется для перехвата runtime-ошибок
+- НЕ ловит синтаксические ошибки
+- работает и с async / await
+
+● async error handling
+- rejected Promise = выброшенная ошибка
+- await автоматически пробрасывает ошибку
+- try / catch заменяет .then / .catch
+
+● Глобальная обработка ошибок:
+
+- window.onerror — ловит синхронные ошибки
+- unhandledrejection — ловит необработанные Promise-ошибки
+`,
+      code: `
+  // Типы ошибок
+  undefinedVar;              // ReferenceError
+  null.foo();                // TypeError
+  JSON.parse('{');           // SyntaxError
+
+  // try / catch
+  try {
+    throw new Error('Oops');
+  } catch (e) {
+    console.log(e.message);
+  } finally {
+    // выполнится всегда
+  }
+
+  // async error handling
+  async function load() {
+    try {
+      await Promise.reject('fail');
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  // unhandledrejection
+  window.addEventListener('unhandledrejection', e => {
+    console.log('Unhandled Promise error:', e.reason);
+  });
+
+  // onerror
+  window.onerror = function (msg, url, line, col, error) {
+    console.log('Global error:', msg);
+  };
+  `,
+      openByDefault: false,
+    },
+    {
+        title: 'Garbage Collector (GC)',
+        text: `Garbage Collector — это механизм JS-движка,
+который автоматически освобождает память,
+занятую объектами, которые больше недоступны.
+
+Основная идея:
+- если на объект НЕТ ссылок → он может быть удалён из памяти
+- разработчик НЕ управляет памятью вручную
+
+Как GC понимает, что можно удалить:
+- используется алгоритм Mark-and-Sweep
+
+Mark-and-Sweep (упрощённо):
+1. Движок помечает все "достижимые" объекты
+2. Всё, что не достижимо — удаляется
+
+Корневые объекты (roots):
+- global object (window)
+- текущий execution context
+- call stack
+- active closures
+
+Важно:
+- GC работает автоматически
+- время запуска GC непредсказуемо
+- GC может влиять на производительность
+      `,
+        code: `
+        // Объект доступен → не удалится
+        let obj = { x: 1 };
+      
+        // Убираем ссылку
+        obj = null;
+        // теперь объект может быть удалён GC
+      
+        // Замыкание удерживает память
+        function create() {
+          const bigData = new Array(1e6);
+          return () => bigData;
+        }
+      
+        const fn = create();
+        // bigData не удалится, пока жив fn
+        `,
+        openByDefault: false,
+      },
+    {
+      title: 'Truthy / Falsy',
+      text: `
+Truthy / Falsy — это не типы данных,
+а результат приведения значения к boolean.
+
+Falsy значения (ВСЕ):
+- false
+- 0
+- -0
+- 0n
+- "" (пустая строка)
+- null
+- undefined
+- NaN
+
+ВСЁ остальное — truthy.
+
+Truthy примеры:
+- "0"
+- "false"
+- []
+- {}
+- function() {}
+- Infinity
+- -1
+
+!!value — двойное отрицание:
+- приводит любое значение к boolean
+`,
+      code: ``,
+      openByDefault: false,
+    },
+    {
+      title: 'Типы данных',
+      text: ``,
+      code: `
+В JavaScript есть два больших типа данных:
+примитивы и объекты.
+
+● Примитивы
+- number
+- string
+- boolean
+- null
+- undefined
+- symbol
+- bigint
+
+Особенности примитивов:
+- хранятся как значения
+- иммутабельны
+- при присваивании копируется значение
+
+● Объекты
+- object (объекты, массивы, функции)
+- хранятся по ссылке
+- могут изменяться
+
+Передача по значению vs по ссылке:
+
+- примитивы передаются по значению
+- объекты передаются по ссылке (точнее — копируется ссылка)
+
+typeof — оператор определения типа:
+
+- typeof 5 → "number"
+- typeof "hi" → "string"
+- typeof true → "boolean"
+- typeof undefined → "undefined"
+- typeof {} → "object"
+- typeof [] → "object"
+- typeof function() {} → "function"
+- typeof null → "object" (ошибка в языке)
+`,
+      openByDefault: false,
     },
     {
         title: 'Prototype и Prototype Chain',
@@ -11,7 +304,7 @@ window.CARDS = [
 через цепочку прототипов (Prototype Chain).
 
 Посути есть 4 вещи о которых можно рассказать:
-● [[Prototype]] — скрытая ссылка
+● [[Prototype]] — скрытая ссылка, это внутренняя механика
 ● __proto__     — доступ к ней
 ● prototype     — шаблон для new
 ● instanceof   — поиск в prototype chain
@@ -78,7 +371,7 @@ const d = new Dog();
 d instanceof Dog;    // true
 d instanceof Animal; // true
       `,
-        openByDefault: true,
+        openByDefault: false,
       },
     {
       title: 'Разница между ООП и ФП',
@@ -89,7 +382,7 @@ d instanceof Animal; // true
 - самое нарушаемое это Иммутабельность (когда данные не должны менятся, а все через создание новых копий с изменениями) 
 - лучше всего для вычислений с большим потоком данных`,
       code: ``,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
         title: 'Closure (замыкание) — под капотом',
@@ -161,7 +454,7 @@ for (let i = 0; i < 3; i++) {
   arr.push(() => i);
 }
       `,
-        openByDefault: true,
+        openByDefault: false,
       },
     {
         title: 'Tree Shaking',
@@ -208,7 +501,7 @@ console.log('init');
   "sideEffects": false
 }
       `,
-        openByDefault: true,
+        openByDefault: false,
       },      
     {
         title: 'Код-сплиттинг (Code Splitting)',
@@ -258,7 +551,7 @@ const Profile = React.lazy(() => import('./Profile'));
   <Profile />
 </Suspense>
       `,
-        openByDefault: true,
+        openByDefault: false,
       },
     {
       title: 'Execution Context + Lexical Environment vs Variable Environment',
@@ -314,7 +607,7 @@ Variable Environment — старая система ради совместим
 - логически похож, но используется для var-hoisting
 `,
       code: ``,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'Полифилл и Транспилер Бабель Babel & Core.js',
@@ -358,7 +651,7 @@ const sum = (a, b) => a + b;
 var sum = function (a, b) {
   return a + b;
 };`,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'Погружение, захват и всплытие событий – это событийная модель',
@@ -393,7 +686,7 @@ focusin, focusout — ✔ всплывают
 event.target - Это самый глубокий элемент, по которому реально кликнули
 event.currentTarget - НА КОМ сейчас висит обработчик (addEventListener)`,
       code: ``,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'Таблица приведения (Type coercion table)',
@@ -443,7 +736,7 @@ Number("42");     // 42
 Boolean(0);       // false
 String(null);     // "null"
 `,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'АНТИПАТТЕРНЫ',
@@ -479,7 +772,7 @@ function unusedHelper() {
   return 'never called';
 }
 `,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'ПАТТЕРНЫ',
@@ -524,7 +817,7 @@ function createUser(type) {
   if (type === 'guest') return { role: 'guest' };
 }
 `,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
         title: 'Браузерные API и ECMAScript API',
@@ -627,7 +920,7 @@ requestAnimationFrame(() => {});
 // Idle
 requestIdleCallback(() => {});
       `,
-        openByDefault: true,
+        openByDefault: false,
       }
       ,
     {
@@ -670,7 +963,7 @@ Event Loop iteration:
 │   │ postMessage                      │ Task Queue    │ После render                         │
 └───┴──────────────────────────────────┴───────────────┴──────────────────────────────────────┘
 `,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
         title: 'Абстрактный класс',
@@ -709,7 +1002,7 @@ class Dog extends Animal {
 const d = new Dog();
 d.speak();
         `,
-        openByDefault: true,
+        openByDefault: false,
       },
     {
       title: 'ИММУТАБЕЛЬНОСТЬ',
@@ -738,7 +1031,7 @@ d.speak();
 - безопасная работа с состоянием
 `,
       code: ``,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'Разница между ASYNC и DEFER у тега SCRIPT?',
@@ -786,7 +1079,7 @@ d.speak();
 - Можно использовать async с module
 `,
       code: ``,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'Методы объектов',
@@ -823,7 +1116,7 @@ user.greet();
 // hasOwnProperty
 user.hasOwnProperty('greet'); // false
 `,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'Чем BIND отличается от CALL, APPLY',
@@ -848,7 +1141,7 @@ greet.apply(user, ['Москва', 'Россия']);
 const greetUser = greet.bind(user, 'Москва');
 greetUser('Россия');
 `,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'Как можно скопировать/клонировать объект?',
@@ -859,7 +1152,7 @@ greetUser('Россия');
 
 В JS нет универсального/нативного способа для глубокого копирования, выбор зависит от структуры данных, либо нужно писать свой хэлпер`,
       code: ``,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'Хэширование (Hashing)',
@@ -897,7 +1190,7 @@ greetUser('Россия');
 для хэширования паролей, они специально сделаны медленными и делают каждую попытку дорогой, некая доп зашита от брут форса
 `,
       code: ``,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'СТРУКТУРЫ ДАННЫХ',
@@ -916,7 +1209,7 @@ greetUser('Россия');
 4. new WeakSet:
    WeakSet является специальной разновидностью Set, где элементы должны быть объектами. Как и в случае с WeakMap, WeakSet не предотвращает удаление элементов из памяти, если они больше не используются.`,
       code: ``,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'ФУНКЦИИ Function',
@@ -955,7 +1248,7 @@ const greet = () => "Привет!";
 -нет prototype, arguments
 -Сохраняют контекст this родительской области видимости`,
       code: ``,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'Execution Context (контекст выполнения)',
@@ -994,7 +1287,7 @@ const greet = () => "Привет!";
 -переменным присваиваются реальные значения
 -функции вызываются → создают новые Execution Context`,
       code: ``,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'Hoisting Всплытие',
@@ -1016,13 +1309,13 @@ const greet = () => "Привет!";
 ●●Т.е. у var идёт незначительная нагрузка при построении синтаксического дерева
 Нагрузка в том, что при инициализации var, задается значение и тип по умолчанию, затем меняется, когда дело доходит до присвоения значения. Это двойная работа, чего нет у let и const`,
       code: ``,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'JSON (JavaScript Object Notation)',
       text: 'Это формат обмена данными, строковое представление обьектов',
       code: ``,
-      openByDefault: true,
+      openByDefault: false,
     },
     {
       title: 'Деструктуризация',
@@ -1048,10 +1341,10 @@ const { name, ...details } = person;
 
 console.log(name); // Вывод: "Alice"
 console.log(details); // Вывод: { age: 30, city: "New York" }`,
-      openByDefault: true,
+      openByDefault: false,
     },
   {
-    title: 'PROMISE',
+    title: 'PROMISE + async / await',
     text: `Создан что-бы убрать проблему колбэк хэла, сделать асинхронный код более читаемым и цепочечным
 
 Это микротаска, под капотом работающая через microtaskQueue(),
@@ -1071,6 +1364,18 @@ Promise всегда находится в одном из состояний:
 ● allSettled - ждёт все, но не падает, и возвращает помойму статусы
 ● race - возвращает первый завершившийся (успех или ошибка)
 ● any - вернет первый успешно завершенный
+
+●●● async / await — синтаксический сахар над Promise
+
+Как работает await под капотом:
+- await приостанавливает выполнение функции
+- функция НЕ блокирует call stack
+- выполнение продолжается через microtask (Promise.then)
+
+● Error handling в async:
+- ошибки в Promise → rejected
+- await бросает ошибку
+- try / catch работает как .then / .catch
 `,
     code: `console.log(1);
 Promise.resolve().then(() => console.log(2));
@@ -1078,7 +1383,7 @@ setTimeout(() => console.log(3));
 console.log(4);
 // 1 → 4 → 2 → 3
 `,
-  openByDefault: true,
+  openByDefault: false,
   },
   {
     title: 'Каррирование',
@@ -1092,7 +1397,7 @@ add(2)(3); // 5
 //Можно заранее зафиксировать часть аргументов
 const add10 = add(10);
 console.log(add10(5)); // 15`,
-    openByDefault: true,
+    openByDefault: false,
   },
   {
     title: 'Rest и Spread',
@@ -1107,6 +1412,6 @@ const { id, ...rest } = user;
 console.log(id);   // 1
 console.log(rest); // { name: "Andrey", role: "admin" }
     `,
-    openByDefault: true,
+    openByDefault: false,
   },
 ];
